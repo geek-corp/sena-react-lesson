@@ -6,6 +6,7 @@ import { TournamentModal } from '../components/TournamentModal';
 import { ToastContainer, toast } from 'react-toastify';
 
 function Torneos() {
+  const token = localStorage.getItem("miToken");
   const [tournaments, setTournaments] = useState([]);
   const [isModalShow, setIsModalShow] = useState(false);
   const [currentTournament, setCurrentTournament] = useState({});
@@ -18,7 +19,11 @@ function Torneos() {
   }, []);
 
   const fetchTournament = async () => {
-      const response = await axios.get('http://127.0.0.1:8000/api/tournament');
+      const response = await axios.get('http://127.0.0.1:8000/api/tournament', {
+        headers: {
+          'Authorization': "Bearer " + token
+        }
+      });
       if (response.status === 200){
         console.log(response.data);
         setTournaments(response.data.data);
@@ -26,8 +31,12 @@ function Torneos() {
   }
 
   const fetchVideoGames = () => {
-    axios.get(import.meta.env.VITE_TORNEO_ENDPOINT + '/api/videojuegos').then((response) => {
-      setGames(response.data.data);
+    axios.get(import.meta.env.VITE_TORNEO_ENDPOINT + '/api/videojuegos', {
+       headers: {
+          'Authorization': "Bearer " + token
+        }
+    }).then((response) => {
+      setGames(response.data.videojuegos);
     }).catch(error => {
       console.log(error);
     })
